@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var viewModel: RandomViewModel
     private lateinit var editText: EditText
     private lateinit var button: Button
@@ -20,21 +19,21 @@ class MainActivity : AppCompatActivity() {
         editText = findViewById(R.id.rndNum)
         button = findViewById(R.id.getRnd)
 
+        viewModel = RandomViewModel()
+
         val provider = ViewModelProvider(this)
-        viewModel = provider.get(RandomViewModel::class.java)
-        initView()
-        observeViewModel()
-    }
+        Singletonclass.getInstance().setState(provider.get(RandomViewModel::class.java))
 
-    fun observeViewModel() {
-        viewModel.currentRandomNumber.observe(this, Observer {
-            editText.setText(it.toString())
-        })
-    }
+        button.setOnClickListener { view ->
 
-    fun initView() {
-        button.setOnClickListener {
+            viewModel = Singletonclass.getInstance().getState()
             viewModel.generateRandomNumber()
+
+
+            viewModel.currentRandomNumber.observe( this, Observer {
+                editText.setText(it.toString())
+            })
         }
-    }
+        }
+
 }
